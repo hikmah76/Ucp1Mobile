@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.ucp1mobile.data.entity.Matakuliah
 import com.example.ucp1mobile.ui.viewmodel.MatakuliahViewModel
-// Form input mata kuliah, termasuk validasi dan dropdown
+//  Form input untuk menambah data mata kuliah, dengan validasi, dropdown untuk SKS, semester, jenis, dan dosen pengampu, serta tombol simpan.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertFormMth(
