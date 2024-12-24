@@ -1,6 +1,7 @@
 package com.example.ucp1mobile.data.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,31 +10,33 @@ import com.example.ucp1mobile.data.dao.MatakuliahDao
 import com.example.ucp1mobile.data.entity.Dosen
 import com.example.ucp1mobile.data.entity.Matakuliah
 
-
-//Mendefinisikan database dengan tabel Mahasiswa
-
-@Database(entities = [Dosen::class, Matakuliah::class], version = 2, exportSchema = false)
+@Database( // database lokal Room untuk menyimpan data Dosen dan Matakuliah
+    entities = [Dosen::class, Matakuliah::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class KrsDatabase : RoomDatabase() {
-
-    //Mendefinisikan fungsi untuk mengakses data Mahasiswa
     abstract fun dosenDao(): DosenDao
     abstract fun matakuliahDao(): MatakuliahDao
 
     companion object {
-        @Volatile //Memastikan bahwa nilai variabel Instance selalu sama di
+        private const val DATABASE_NAME = "krs_database"
+
+        @Volatile
         private var Instance: KrsDatabase? = null
 
-        // template
         fun getDatabase(context: Context): KrsDatabase {
-            return (Instance ?: synchronized(this) {
-                Room.databaseBuilder(
-                    context.applicationContext,
-                    KrsDatabase::class.java, //Class database
-                    "KrsDatabase" // Nama database
+            return Instance ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,  // Gunakan applicationContext
+                    KrsDatabase::class.java,
+                    DATABASE_NAME
                 )
-
-                    .build().also { Instance = it }
-            })
+                    .fallbackToDestructiveMigration()
+                    .build()
+                Instance = instance
+                instance
+            }
         }
     }
 }
